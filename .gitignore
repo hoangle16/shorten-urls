@@ -1,0 +1,68 @@
+# Root level
+.DS_Store
+.env
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Dependencies
+**/node_modules/
+/.pnp
+.pnp.js
+
+# Client specific
+/client/build
+/client/dist
+/client/.env
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
+/client/coverage
+/client/.cache
+/client/.eslintcache
+
+# Server specific
+/server/dist
+/server/build
+/server/.env
+/server/logs
+/server/coverage
+/server/uploads
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+**/coverage/
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# IDE - WebStorm/IntelliJ
+**/*.iml
+**/*.iws
+**/*.ipr
+
+# Cache directories
+.cache/
+.npm/
+
+# Local Netlify folder
+.netlify
+
+# Optional REPL history
+.node_repl_history
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Output of 'npm pack'
+*.tgz

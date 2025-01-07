@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .a-link-default {
+    @apply text-blue-600 hover:text-blue-800;
+    transition: color 0.3s ease;
+    cursor: pointer;
+  }
+}
