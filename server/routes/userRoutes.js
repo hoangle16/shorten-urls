@@ -13,6 +13,16 @@ const {
 } = require("../validators/userValidator");
 const { roles } = require("../consts/consts");
 const validateRequest = require("../middlewares/validateRequest");
+const upload = require("../middlewares/upload");
+
+router.put(
+  "/users/avatar",
+  authenticateToken,
+  upload.single("avatar"),
+  userController.updateAvatar
+);
+
+router.delete("/users/avatar", authenticateToken, userController.deleteAvatar);
 
 router.get(
   "/users",

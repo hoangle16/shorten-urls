@@ -80,8 +80,20 @@ const Sidebar = ({
         {/* User Info */}
         <div className="p-4 border-b">
           <div className="flex items-center justify-center space-x-4">
-            <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
-              {user?.email?.charAt(0).toUpperCase()}
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
+                user?.avatar?.url ? "bg-white" : "bg-blue-500"
+              }`}
+            >
+              {user?.avatar?.url ? (
+                <img
+                  className="w-full h-full object-cover rounded-full"
+                  src={user?.avatar?.url}
+                  alt="User Avatar"
+                />
+              ) : (
+                <span>{user?.email?.charAt(0).toUpperCase()}</span>
+              )}
             </div>
             {isSidebarOpen && (
               <div

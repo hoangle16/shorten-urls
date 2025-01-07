@@ -92,6 +92,34 @@ const updateUser = asyncHandler(async (req, res) => {
   res.json(updatedUser);
 });
 
+const updateAvatar = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  
+  if (!req.file) {
+    throw new CustomError("No file uploaded", 400);
+  }
+
+  const cacheKey = `user:${userId}`;
+  const updatedUser = await updateCacheAfterModification(cacheKey, () =>
+    userService.updateUserAvatar(userId, req.file.buffer, req.file.mimetype)
+  );
+
+  res.json({
+    message: "Avatar updated successfully",
+    avatar: updatedUser.avatar,
+  });
+});
+
+const deleteAvatar = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const cached = `user:${userId}`;
+  await UpdateCacheAfterDelete(cached, () =>
+    userService.deleteUserAvatar(userId)
+  );
+
+  res.json({ message: "Avatar deleted successfully" });
+});
+
 const changePassword = asyncHandler(async (req, res) => {
   await userService.changePassword(
     req.user.id,
@@ -178,6 +206,8 @@ module.exports = {
   getUser,
   getProfile,
   updateUser,
+  updateAvatar,
+  deleteAvatar,
   deleteUser,
   deleteUsers,
   verifyEmail,

@@ -33,6 +33,12 @@ export const userApi = {
     const response = await apiClient.get(`${BASE_URL}/profile`);
     return response.data;
   },
+  updateAvatar: async (formdata) => {
+    const response = await apiClient.put(`${BASE_URL}/avatar`, formdata, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
   updateUser: async ({ userId, firstName, lastName, isVerify, role }) => {
     const response = await apiClient.put(`${BASE_URL}/${userId}`, {
       firstName,

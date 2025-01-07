@@ -52,6 +52,27 @@ const UserSchema = new mongoose.Schema(
         message: "Last name must be at most 64 characters",
       },
     },
+    avatar: {
+      url: {
+        type: String,
+        required: false,
+        default: null,
+        validate: {
+          validator: (value) => {
+            if (value) {
+              return validator.isURL(value, { require_protocol: true });
+            }
+
+            return true;
+          },
+        },
+      },
+      publicId: {
+        type: String,
+        required: false,
+        default: null,
+      },
+    },
     isVerify: {
       type: Boolean,
       default: false,
@@ -70,6 +91,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: null,
       select: false,
+    },
+    isBanned: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

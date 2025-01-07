@@ -158,3 +158,20 @@ export const useDeleteUsers = (addToast) => {
     },
   });
 };
+
+export const useUpdateAvatar = (addToast) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: userApi.updateAvatar,
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries(userKeys.profile());
+      addToast("Avatar updated successfully!", { variant: "success" });
+    },
+    onError: (err) => {
+      addToast("Failed to update avatar. Please try again.", {
+        variant: "error",
+      });
+    },
+  });
+};

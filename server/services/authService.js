@@ -57,6 +57,7 @@ const loginUser = async (username, password) => {
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     role: user.role,
+    avatar: user.avatar,
   };
 
   const { accessToken, refreshToken } = await generateTokens({

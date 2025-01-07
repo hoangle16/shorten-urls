@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const { CustomError } = require("../helpers/utils");
 const { roles, userSortKey } = require("../consts/consts");
 const dayjs = require("dayjs");
+const cloudinaryService = require("../services/cloudinaryService");
 
 const getUsers = async ({
   search,
@@ -171,6 +172,45 @@ const updateUser = async (userId, user) => {
   return updatedUser;
 };
 
+const updateUserAvatar = async (userId, fileBuffer, fileType) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new CustomError("User not found", 404);
+  }
+
+  if (user.avatar && user.avatar.publicId) {
+    await cloudinaryService.deleteImage(user.avatar.publicId);
+  }
+
+  const uploadResponse = await cloudinaryService.uploadImage(
+    fileBuffer,
+    fileType
+  );
+
+  user.avatar = {
+    url: uploadResponse.secure_url,
+    publicId: uploadResponse.public_id,
+  };
+
+  return await user.save();
+};
+
+const deleteUserAvatar = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new CustomError("User not found", 404);
+  }
+
+  if (!user.avatar || !user.avatar.publicId) {
+    throw new CustomError("User does not have an avatar", 404);
+  }
+
+  await cloudinaryService.deleteImage(user.avatar.publicId);
+
+  user.avatar = null;
+  return await user.save();
+};
+
 const deleteUser = async (userId) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -299,6 +339,8 @@ module.exports = {
   getUser,
   getProfile,
   updateUser,
+  updateUserAvatar,
+  deleteUserAvatar,
   deleteUser,
   deleteUsers,
   verifyEmail,
