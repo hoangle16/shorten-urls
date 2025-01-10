@@ -82,7 +82,7 @@ const UpdateLink = () => {
       try {
         setIsLinkInfoLoading(true);
         const data = await linkApi.getLinkById(linkId);
-        setLinkInfo(data);
+        setLinkInfo(data.link);
       } catch (error) {
         console.error("Failed to fetch link info:", error);
       } finally {

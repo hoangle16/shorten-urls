@@ -20,7 +20,8 @@ const LinkDetail = () => {
       try {
         setIsLoading(true);
         const data = await linkApi.getLinkById(linkId);
-        setLinkInfo(data);
+        console.log(data);
+        setLinkInfo(data.link);
       } catch (err) {
         console.error("Failed to fetch link info:", err);
         setError(
@@ -55,7 +56,7 @@ const LinkDetail = () => {
   return (
     <>
       <Helmet>
-        <title>Link Details - {linkInfo?.shortUrl} | Shorten URLs</title>
+        <title>Link Details | Shorten URLs</title>
       </Helmet>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">

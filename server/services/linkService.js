@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const { linkSortKey } = require("../consts/consts");
 const LinkStat = require("../models/LinkStat");
 const dayjs = require("dayjs");
+const Report = require("../models/Report");
 
 const generateShortUrl = (domain) => {
   return `${domain}/${Math.random().toString(36).substring(2, 8)}`;
@@ -14,6 +15,7 @@ const getLinks = async ({
   search,
   hasPassword,
   isExpired,
+  isDisabled,
   createdBy,
   sortBy = "createdAt",
   sortOrder = "asc",
@@ -50,6 +52,10 @@ const getLinks = async ({
     } else {
       query.$or = [{ expiryDate: { $gt: currentDate } }, { expiryDate: null }];
     }
+  }
+
+  if (isDisabled !== undefined && isDisabled !== null) {
+    query.isDisabled = isDisabled;
   }
 
   if (createdBy) {
@@ -115,6 +121,7 @@ const getLinksByUserId = async ({
   search,
   isExpired,
   hasPassword,
+  isDisabled,
   sortBy = "createdAt",
   sortOrder = "desc",
   page = 1,
@@ -144,6 +151,10 @@ const getLinksByUserId = async ({
     } else {
       query.password = { $in: [null, ""] };
     }
+  }
+
+  if (isDisabled !== undefined && isDisabled !== null) {
+    query.isDisabled = isDisabled;
   }
 
   const skip = (page - 1) * limit;
@@ -200,6 +211,10 @@ const getLinkByShortUrl = async (shortUrl) => {
     throw new CustomError("Link not found", 404);
   }
 
+  if (link.isDisabled) {
+    throw new CustomError("Link has disabled", 400);
+  }
+
   return link;
 };
 
@@ -210,7 +225,7 @@ const getLinkById = async (linkId) => {
       select: "username",
     })
     .lean();
-  console.log(link);
+
   if (!link) {
     throw new CustomError("Link not found", 404);
   }
@@ -236,8 +251,8 @@ const getLinkById = async (linkId) => {
   const statsToday = result[0]?.statsToday[0]?.totalToday || 0;
   const transformedLink = {
     ...link,
-    createdBy: link.userId.username,
-    userId: link.userId._id,
+    createdBy: link.userId?.username,
+    userId: link.userId?._id,
   };
   return {
     link: transformedLink,
@@ -359,6 +374,7 @@ const deleteLink = async (linkId) => {
 
     await Promise.all([
       LinkStat.deleteMany({ linkId }).session(session),
+      Report.deleteMany({ linkId }).session(session),
       link.deleteOne().session(session),
     ]);
 
@@ -392,6 +408,7 @@ const deleteLinks = async (linkIds) => {
 
     await Promise.all([
       LinkStat.deleteMany({ linkId: { $in: linkIds } }).session(session),
+      Report.deleteMany({ linkId: { $in: linkIds } }).session(session),
       Link.deleteMany({ _id: { $in: linkIds } }).session(session),
     ]);
 
@@ -405,6 +422,25 @@ const deleteLinks = async (linkIds) => {
   }
 };
 
+const updateLinkStatus = async (linkId, isDisabled, message) => {
+  const link = await Link.findById(linkId);
+
+  if (!link) {
+    throw new CustomError("Link not found", 404);
+  }
+
+  link.isDisabled = isDisabled;
+  await link.save();
+
+  // TODO: send a notification to user (link.userId)
+  // notifyUser(link.userId, updatedStatus, message);
+
+  return {
+    link,
+    status: isDisabled ? "disabled" : "enabled",
+  };
+};
+
 module.exports = {
   getLinks,
   getLinksByUserId,
@@ -414,4 +450,5 @@ module.exports = {
   updateLink,
   deleteLink,
   deleteLinks,
+  updateLinkStatus,
 };

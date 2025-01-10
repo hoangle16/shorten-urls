@@ -5,22 +5,25 @@ import { useState } from "react";
 import { ErrorDisplay } from "../../shared/component/ErrorDisplay";
 import dayjs from "dayjs";
 import { Button } from "../../../components/Button";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Edit2, Trash2 } from "lucide-react";
 import { DetailLayout } from "../../shared/component/DetailLayout";
 import { InfoGrid } from "../../shared/component/InfoGrid";
 import { StatCard } from "../../shared/component/StatCard";
 import DeleteConfirmationDialog from "../../../components/DeleteConfirmationPopup";
 import UpdateLinkDialog from "../component/UpdateLinkDialog";
+import UpdateLinkStatusDialog from "../component/UpdateLinkStatusDialog";
 
 const LinkDetailManagement = () => {
   const { linkId } = useParams();
   const { data, isLoading, error } = useLink(linkId);
-  console.log(data);
+
   const navigate = useNavigate();
   const { addToast } = useToast();
   const deleteLink = useDeleteLink(addToast);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isUpdateStatusDialogOpen, setIsUpdateStatusDialogOpen] =
+    useState(false);
 
   if (error) {
     return (
@@ -60,6 +63,14 @@ const LinkDetailManagement = () => {
         "N/A",
     },
     {
+      label: "Status",
+      value: data?.link?.isDisabled ? (
+        <span className="text-red-500">Disabled</span>
+      ) : (
+        <span className="text-green-500">Enable</span>
+      ),
+    },
+    {
       label: "Description",
       value: data?.link?.description || "",
       type: "textarea",
@@ -83,6 +94,14 @@ const LinkDetailManagement = () => {
         size="sm"
       >
         <Edit className="w-4 h-4" /> Update Link
+      </Button>
+      <Button
+        variant="warning"
+        onClick={() => setIsUpdateStatusDialogOpen(true)}
+        className="flex items-center gap-2"
+        size="sm"
+      >
+        <Edit2 className="w-4 h-4" /> Change Status
       </Button>
       <Button
         variant="danger"
@@ -133,6 +152,12 @@ const LinkDetailManagement = () => {
       <UpdateLinkDialog
         isOpen={isUpdateDialogOpen}
         onClose={() => setIsUpdateDialogOpen(false)}
+        link={data?.link}
+      />
+
+      <UpdateLinkStatusDialog
+        isOpen={isUpdateStatusDialogOpen}
+        onClose={() => setIsUpdateStatusDialogOpen(false)}
         link={data?.link}
       />
     </>

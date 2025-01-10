@@ -7,14 +7,15 @@ const User = require("../models/User");
 const dayjs = require("dayjs");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 const StreamTransport = require("nodemailer/lib/stream-transport");
+const Report = require("../models/Report");
 dayjs.extend(weekOfYear);
 
 const getAdminDashboardOverview = async () => {
   const currentDate = dayjs().startOf("day");
 
-  const [totalDomains, todayDomains] = await Promise.all([
-    Domain.countDocuments(),
-    Domain.countDocuments({ createdAt: { $gte: currentDate } }),
+  const [totalReports, todayReports] = await Promise.all([
+    Report.countDocuments(),
+    Report.countDocuments({ createdAt: { $gte: currentDate } }),
   ]);
 
   const [totalLinks, todayLinks] = await Promise.all([
@@ -33,9 +34,9 @@ const getAdminDashboardOverview = async () => {
   ]);
 
   return {
-    domains: {
-      total: totalDomains,
-      today: todayDomains,
+    reports: {
+      total: totalReports,
+      today: todayReports,
     },
     links: {
       total: totalLinks,
@@ -113,8 +114,8 @@ const getAdminDashboardChart = async ({
     ]);
   };
 
-  const [domains, links, users, clicks] = await Promise.all([
-    getGrowthData(Domain),
+  const [reports, links, users, clicks] = await Promise.all([
+    getGrowthData(Report),
     getGrowthData(Link),
     getGrowthData(User),
     getGrowthData(LinkStat),
@@ -138,8 +139,8 @@ const getAdminDashboardChart = async ({
       count: item.count,
     }));
 
-  const filledDomains = fillMissingDates({
-    data: formatData(domains),
+  const filledReports = fillMissingDates({
+    data: formatData(reports),
     startDate,
     endDate,
     range,
@@ -170,7 +171,7 @@ const getAdminDashboardChart = async ({
     links: filledLinks,
     clicks: filledClicks,
     users: filledUsers,
-    domains: filledDomains
+    reports: filledReports,
   };
 };
 

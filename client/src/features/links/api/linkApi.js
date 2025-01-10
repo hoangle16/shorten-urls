@@ -6,6 +6,7 @@ export const linkApi = {
     search,
     isExpired,
     hasPassword,
+    isDisabled,
     sortBy,
     sortOrder,
     page,
@@ -15,6 +16,7 @@ export const linkApi = {
       search,
       isExpired,
       hasPassword,
+      isDisabled,
       sortBy,
       sortOrder,
       page,
@@ -57,6 +59,13 @@ export const linkApi = {
   },
   createLink: async (linkData) => {
     const response = await apiClient.post("/api/links", linkData);
+    return response.data;
+  },
+  updateLinkStatus: async ({ linkId, isDisabled, message }) => {
+    const response = await apiClient.put(`/api/links/${linkId}/status`, {
+      isDisabled,
+      message,
+    });
     return response.data;
   },
   updateLink: async ({

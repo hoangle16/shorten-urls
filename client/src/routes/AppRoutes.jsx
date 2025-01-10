@@ -27,6 +27,9 @@ import LinkManagement from "../features/admin/page/LinkManagement";
 import LinkDetailManagement from "../features/admin/page/LinkDetailManagement";
 import LinkStatManagement from "../features/admin/page/LinkStatManagement";
 import DomainManagement from "../features/admin/page/DomainManagement";
+import ReportLink from "../features/report/pages/ReportLink";
+import ReportManagement from "../features/admin/page/ReportManagement";
+import ReportDetailManagement from "../features/admin/page/ReportDetailManagement";
 
 const Login = lazy(() => import("../features/auth/pages/Login"));
 const Register = lazy(() => import("../features/auth/pages/Register"));
@@ -45,6 +48,7 @@ const AppRoutes = () => {
           path="/:shortCode/protected"
           element={<VerificationProtectedLink />}
         />
+        <Route path="/report" element={<ReportLink />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Route>
 
@@ -144,6 +148,12 @@ const AppRoutes = () => {
         <Route path="/admin/users/:userId" element={<UserDetail />} />
 
         <Route path="/admin/domains" element={<DomainManagement />} />
+
+        <Route path="/admin/reports" element={<ReportManagement />} />
+        <Route
+          path="/admin/reports/:reportId"
+          element={<ReportDetailManagement />}
+        />
       </Route>
 
       <Route path="*" element={<NotFound />} />

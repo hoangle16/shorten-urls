@@ -30,6 +30,27 @@ export const useLink = (id) => {
   });
 };
 
+export const useUpdateLinkStatus = (addToast) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: linkApi.updateLinkStatus,
+    onError: (err) => {
+      console.error("Failed to update link status", err);
+      addToast(
+        err?.response?.data?.message ||
+          "Failed to update link status. Please try again.",
+        { variant: "error" }
+      );
+    },
+    onSuccess: (_, { linkId }) => {
+      addToast("Link status updated successfully", { variant: "success" });
+      queryClient.invalidateQueries(linkKeys.lists());
+      queryClient.invalidateQueries(linkKeys.detail(linkId));
+    },
+  });
+};
+
 export const useUpdateLink = (addToast) => {
   const queryClient = useQueryClient();
 

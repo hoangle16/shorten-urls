@@ -7,8 +7,18 @@ import {
 } from "../../links/hooks/useLinks";
 import UpdateLinkDialog from "../component/UpdateLinkDialog";
 import { Button } from "../../../components/Button";
+import { useState } from "react";
+import UpdateLinkStatusDialog from "../component/UpdateLinkStatusDialog";
 
 const LinkManagement = () => {
+  const [isOpenUpdateStatusDialog, setIsOpenUpdateStatusDialog] =
+    useState(false);
+  const [itemToUpdate, setItemToUpdate] = useState(null);
+  const handleUpdateStatus = (row) => {
+    setIsOpenUpdateStatusDialog(true);
+    setItemToUpdate(row);
+  };
+
   const columns = [
     {
       key: "originalUrl",
@@ -52,6 +62,16 @@ const LinkManagement = () => {
           </div>
         );
       },
+    },
+    {
+      key: "isDisabled",
+      title: "Status",
+      render: (value) =>
+        value ? (
+          <div className="text-red-500">Disabled</div>
+        ) : (
+          <div className="text-green-500">Enabled</div>
+        ),
     },
     {
       key: "createdBy",
@@ -102,6 +122,16 @@ const LinkManagement = () => {
             Update
           </Button>
           <Button
+            variant="info"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleUpdateStatus(row);
+            }}
+          >
+            Change Status
+          </Button>
+          <Button
             variant="danger"
             size="sm"
             onClick={(e) => {
@@ -135,25 +165,44 @@ const LinkManagement = () => {
       ],
       parseValue: (value) => value === "true",
     },
+    {
+      key: "isDisabled",
+      placeholder: "Select a status",
+      options: [
+        { label: "Enabled", value: "false" },
+        { label: "Disabled", value: "true" },
+      ],
+      parseValue: (value) => value === "true",
+    },
   ];
   return (
-    <DataManagement
-      title="Link Management"
-      pageTitle="Link Management | Shorten URLs"
-      columns={columns}
-      useDataQuery={useLinks}
-      useDeleteMutation={useDeleteLink}
-      useDeleteManyMutation={useDeleteLinks}
-      filterOptions={filterOptions}
-      UpdateDialog={UpdateLinkDialog}
-      updateDialogProps={{
-        itemPropName: "link",
-      }}
-      searchPlaceholder="Enter text to search..."
-      dataPath="links"
-      paginationPath="pagination"
-      pathPrefix="/admin/links"
-    />
+    <>
+      <DataManagement
+        title="Link Management"
+        pageTitle="Link Management | Shorten URLs"
+        columns={columns}
+        useDataQuery={useLinks}
+        useDeleteMutation={useDeleteLink}
+        useDeleteManyMutation={useDeleteLinks}
+        filterOptions={filterOptions}
+        UpdateDialog={UpdateLinkDialog}
+        updateDialogProps={{
+          itemPropName: "link",
+        }}
+        searchPlaceholder="Enter text to search..."
+        dataPath="links"
+        paginationPath="pagination"
+        pathPrefix="/admin/links"
+      />
+      <UpdateLinkStatusDialog
+        isOpen={isOpenUpdateStatusDialog}
+        onClose={() => {
+          setIsOpenUpdateStatusDialog(false);
+          setItemToUpdate(null);
+        }}
+        link={itemToUpdate}
+      />
+    </>
   );
 };
 

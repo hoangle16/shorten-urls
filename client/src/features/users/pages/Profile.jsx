@@ -121,7 +121,7 @@ const Profile = () => {
       </Helmet>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto mb-8">
-          <h1 className="text-2xl font-bold mb-14">Profile</h1>
+          <h1 className="text-xl font-semibold mb-14">Profile</h1>
           <form
             onSubmit={onSubmit}
             className="bg-white p-6 rounded-xl shadow-lg space-y-4 relative"

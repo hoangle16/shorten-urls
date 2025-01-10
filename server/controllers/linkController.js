@@ -20,6 +20,7 @@ const getLinks = asyncHandler(async (req, res) => {
     search,
     hasPassword,
     isExpired,
+    isDisabled,
     createdBy,
     sortBy,
     sortOrder,
@@ -31,6 +32,7 @@ const getLinks = asyncHandler(async (req, res) => {
     search,
     hasPassword,
     isExpired,
+    isDisabled,
     createdBy,
     sortBy,
     sortOrder,
@@ -210,6 +212,18 @@ const deleteLinks = asyncHandler(async (req, res) => {
   res.json({ message: "Links deleted successfully" });
 });
 
+const updateLinkStatus = asyncHandler(async (req, res) => {
+  const { linkId } = req.params;
+  const { isDisabled, message } = req.body;
+  const updatedLink = await linkService.updateLinkStatus(
+    linkId,
+    isDisabled,
+    message
+  );
+
+  return res.json(updatedLink);
+});
+
 module.exports = {
   getLinks,
   getLinksByUserId,
@@ -220,4 +234,5 @@ module.exports = {
   updateLink,
   deleteLink,
   deleteLinks,
+  updateLinkStatus,
 };

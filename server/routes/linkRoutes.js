@@ -13,6 +13,7 @@ const {
   passwordValidate,
   updateLinkValidation,
   createLinkValidation,
+  updateLinkStatusValidation,
 } = require("../validators/linkValidator");
 const validateRequest = require("../middlewares/validateRequest");
 
@@ -59,6 +60,15 @@ router.post(
   createLinkValidation,
   validateRequest,
   linkController.createLink
+);
+
+router.put(
+  "/api/links/:linkId/status",
+  authenticateToken,
+  authorizeRoles(roles.admin),
+  updateLinkStatusValidation,
+  validateRequest,
+  linkController.updateLinkStatus
 );
 
 //TODO: update link router

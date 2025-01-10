@@ -1,7 +1,7 @@
 export const Card = ({ children, title, subtitle, footer, className = "" }) => {
   return (
     <div
-      className={`"bg-white rounded-xl shadow-md overflow-hidden" ${className}`}
+      className={`"bg-white border rounded-xl shadow-lg overflow-hidden" ${className}`}
     >
       {(title || subtitle) && (
         <div className="px-6 py-4 border-b border-gray-300">

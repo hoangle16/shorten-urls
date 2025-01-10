@@ -2,7 +2,7 @@ const { param, body } = require("express-validator");
 
 const userIdValidate = [param("userId", "userId is in valid").isMongoId()];
 
-const linkIdValidate = [param("linkId", "userId is in valid").isMongoId()];
+const linkIdValidate = [param("linkId", "linkId is in valid").isMongoId()];
 
 const commonLinkValidation = {
   customAddress: body("customAddress")
@@ -69,10 +69,17 @@ const updateLinkValidation = [
 
 const passwordValidate = [commonLinkValidation.password];
 
+const updateLinkStatusValidation = [
+  param("linkId", "linkId is in valid").isMongoId(),
+  body("isDisabled", "isDisabled must be in true/false").isBoolean(),
+  body("message").optional({ nullable: true }),
+];
+
 module.exports = {
   userIdValidate,
   linkIdValidate,
   createLinkValidation,
   updateLinkValidation,
   passwordValidate,
+  updateLinkStatusValidation,
 };

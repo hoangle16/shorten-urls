@@ -22,6 +22,7 @@ const linkRoutes = require("./routes/linkRoutes");
 const domainRoutes = require("./routes/domainRoutes");
 const linkStatRoutes = require("./routes/linkStatRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const reportRoutes = require("./routes/reportRoutes");
 const errorHandler = require("./middlewares/errorHandler");
 const dataNormalization = require("./middlewares/dataNormalization");
 
@@ -81,6 +82,7 @@ app.use("/api", userRoutes);
 app.use("/api", domainRoutes);
 app.use("/api", linkStatRoutes);
 app.use("/api", adminRoutes);
+app.use("/api", reportRoutes);
 app.use("/", linkRoutes);
 
 app.use(errorHandler);

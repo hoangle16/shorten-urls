@@ -27,6 +27,7 @@ const DataManagement = ({
   additionalFilters = {},
   defaultFilters = {},
   pathPrefix = "",
+  emptyMessage = "No data found",
 
   dataPath = "items", // Path to data array in response (e.g., "users", "links", "stats")
   paginationPath = "pagination", // Path to pagination data
@@ -361,7 +362,7 @@ const DataManagement = ({
                   sortDirection={filters.sortOrder}
                   onSort={handleSort}
                   loading={isLoading}
-                  emptyMessage={`No ${title.toLowerCase()} found`}
+                  emptyMessage={emptyMessage}
                   className="shadow-sm rounded-lg border"
                   headerClassName="bg-gray-200"
                   rowClassName={getRowClassName}

@@ -5,7 +5,13 @@ import { useState } from "react";
 import { useDashboardOverview, useDashboardChart } from "../hooks/useAdmin";
 import dayjs from "dayjs";
 import Loading from "../../../components/Loading";
-import { Globe, Link, MousePointerClick, Users } from "lucide-react";
+import {
+  AlertTriangle,
+  Globe,
+  Link,
+  MousePointerClick,
+  Users,
+} from "lucide-react";
 import CustomLineChart from "../../stats/components/CustomLineChart";
 import DateRangePicker from "../../../components/DateRangePicker";
 import { useToast } from "../../../state/ToastContext";
@@ -20,7 +26,7 @@ const overviewList = [
   { key: "links", label: "Links", icon: <Link size={18} /> },
   { key: "clicks", label: "Clicks", icon: <MousePointerClick size={18} /> },
   { key: "users", label: "Users", icon: <Users size={18} /> },
-  { key: "domains", label: "Domains", icon: <Globe size={18} /> },
+  { key: "reports", label: "Reports", icon: <AlertTriangle size={18} /> },
 ];
 
 const AdminDashboard = () => {
@@ -167,7 +173,7 @@ const AdminDashboard = () => {
                         value={dateRange}
                         onChange={handleDateRangeChange}
                         mode={chartType}
-                        className="w-[205px]"
+                        className="w-[200px]"
                       />
                     </div>
                   </div>
@@ -180,7 +186,7 @@ const AdminDashboard = () => {
                       { dataKey: "links", name: "Links", color: "#8884d8" },
                       { dataKey: "clicks", name: "Clicks", color: "#82ca9d" },
                       { dataKey: "users", name: "Users", color: "#ffc658" },
-                      // { dataKey: "domains", name: "Domains", color: "#ff7300" },
+                      { dataKey: "reports", name: "Reports", color: "#ff7300" },
                     ]}
                   />
                 </div>

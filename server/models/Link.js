@@ -38,6 +38,10 @@ const LinkSchema = new mongoose.Schema(
         message: "Description must be at most 1024 characters",
       },
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -49,5 +53,7 @@ const LinkSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+LinkSchema.index({ shortUrl: 1, isDisabled: 1 });
 
 module.exports = mongoose.model("Link", LinkSchema);

@@ -14,13 +14,13 @@ const UserManagement = () => {
       key: "username",
       title: "Username",
       sortable: true,
-      width: "150px"
+      width: "150px",
     },
     {
       key: "email",
       title: "Email",
       sortable: true,
-      width: "200px"
+      width: "200px",
     },
     {
       key: "fullName",
@@ -58,44 +58,6 @@ const UserManagement = () => {
       title: "Created At",
       sortable: true,
       render: (value) => <>{dayjs(value).format("YYYY-MM-DD")}</>,
-    },
-    {
-      key: "actions",
-      title: "Actions",
-      render: (_, row, { onUpdate, onDelete, navigate }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(`/admin/users/${row._id}`);
-            }}
-          >
-            Detail
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onUpdate(row);
-            }}
-          >
-            Update
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(row._id);
-            }}
-          >
-            Delete
-          </Button>
-        </div>
-      ),
     },
   ];
 

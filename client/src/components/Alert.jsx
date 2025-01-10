@@ -15,6 +15,7 @@ export const Alert = ({ children, variant = "info", onClose, className }) => {
         <div className="flex-1">{children}</div>
         {onClose && (
           <button
+            type="button"
             onClick={onClose}
             className="ml-4 text-gray-400 hover:text-gray-600"
           >

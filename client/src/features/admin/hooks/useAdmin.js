@@ -26,7 +26,7 @@ export const useDashboardChart = (filters = {}) => {
         links: data.links[index].count,
         clicks: data.clicks[index].count,
         users: data.users[index].count,
-        domains: data.domains[index].count,
+        reports: data.reports[index].count,
       }));
     },
     placeholderData: keepPreviousData,

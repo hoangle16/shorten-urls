@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const GuestFooter = () => {
   return (
     <footer className="bg-gray-900 text-white">
@@ -5,19 +7,32 @@ const GuestFooter = () => {
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <h4 className="text-xl font-bold mb-4">htl.com</h4>
-            <p className="text-gray-400">Professional, secure, and reliable URL shortening service</p>
+            <p className="text-gray-400">
+              Professional, secure, and reliable URL shortening service
+            </p>
           </div>
           <div>
             <h4 className="text-xl font-bold mb-4">Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white">About Us</a>
+                <Link to="#" className="text-gray-400 hover:text-white">
+                  About Us
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white">Terms of Service</a>
+                <Link to="/report" className="text-gray-400 hover:text-white">
+                  Report Link
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a>
+                <Link to="#" className="text-gray-400 hover:text-white">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="text-gray-400 hover:text-white">
+                  Privacy Policy
+                </Link>
               </li>
             </ul>
           </div>

@@ -8,6 +8,7 @@ import {
   Link2,
   Menu,
   SquareUserRound,
+  TriangleAlert,
   Users,
 } from "lucide-react";
 import Sidebar from "../components/Sidebar";
@@ -34,6 +35,11 @@ const AdminLayout = () => {
     // },
     { path: "/admin/users", icon: <Users size={20} />, label: "Users" },
     { path: "/admin/domains", icon: <Globe size={20} />, label: "Domains" },
+    {
+      path: "/admin/reports",
+      icon: <TriangleAlert size={20} />,
+      label: "Reports",
+    },
   ];
 
   const handleLogout = () => {
