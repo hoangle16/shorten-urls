@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const http = require("http");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const compression = require("compression");
@@ -12,6 +13,8 @@ const rfs = require("rotating-file-stream");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 
+const socketService = require("./config/socket");
+
 // TODO:
 // require("./config/cron");
 
@@ -23,10 +26,12 @@ const domainRoutes = require("./routes/domainRoutes");
 const linkStatRoutes = require("./routes/linkStatRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const errorHandler = require("./middlewares/errorHandler");
 const dataNormalization = require("./middlewares/dataNormalization");
 
 const app = express();
+const server = http.createServer(app);
 
 const PORT = process.env.PORT || 5000;
 
@@ -68,6 +73,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
+// Socket.io
+socketService.initialize(server);
+
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
 // Connect database
@@ -83,6 +91,7 @@ app.use("/api", domainRoutes);
 app.use("/api", linkStatRoutes);
 app.use("/api", adminRoutes);
 app.use("/api", reportRoutes);
+app.use("/api", notificationRoutes);
 app.use("/", linkRoutes);
 
 app.use(errorHandler);
@@ -92,6 +101,6 @@ app.get("*", (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });

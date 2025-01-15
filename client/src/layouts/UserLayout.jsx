@@ -6,8 +6,15 @@ import { Button } from "../components/Base";
 import Sidebar from "../components/Sidebar";
 import UserFooter from "../features/users/components/UserFooter";
 import Breadcrumb from "../components/Breadcumb";
+import Popover from "../components/Popover";
+import Notification from "../features/shared/component/Notification";
 const UserLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const handleUnreadCountChange = (count) => {
+    setUnreadCount(count);
+  };
 
   const { user, logout } = useAuth();
   const navigationItems = [
@@ -45,13 +52,27 @@ const UserLayout = () => {
           </Button>
 
           <div className="flex items-center space-x-4">
-            <Button
-              variant="custom"
-              className="p-2 rounded-lg hover:bg-gray-100 relative"
+            <Popover
+              content={
+                <Notification onUnreadCountChange={handleUnreadCountChange} />
+              }
+              trigger="click"
+              position="bottom"
+              align="right"
+              offset={0}
             >
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </Button>
+              <Button
+                variant="custom"
+                className="p-2 rounded-lg  hover:bg-gray-100 relative"
+              >
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-2 w-4 h-4 text-sm text-white bg-red-500 rounded-full flex justify-center items-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </Button>
+            </Popover>
           </div>
         </header>
 

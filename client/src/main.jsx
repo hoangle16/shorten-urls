@@ -6,11 +6,11 @@ import "./index.css";
 import { HelmetProvider } from "react-helmet-async";
 
 createRoot(document.getElementById("root")).render(
-  //<StrictMode>
+  <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
     </HelmetProvider>
-  //</StrictMode>
+  </StrictMode>
 );

@@ -25,6 +25,7 @@
     "react-router-dom": "^7.0.1",
     "react-tailwindcss-datepicker": "^1.7.2",
     "recharts": "^2.14.1",
+    "socket.io-client": "^4.8.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {

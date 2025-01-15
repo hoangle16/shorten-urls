@@ -3,6 +3,7 @@ const { CustomError } = require("../helpers/utils");
 const Link = require("../models/Link");
 const Report = require("../models/Report");
 const { updateLinkStatus } = require("./linkService");
+const socketService = require("../config/socket");
 
 // TODO: save email of the reporter
 const createReport = async ({
@@ -185,6 +186,18 @@ const updateReportStatus = async ({
       switch (action) {
         case "warning":
           // TODO: send notification to user
+          const link = await Link.findById(report.linkId);
+          const isNoticed = socketService.sendNotificationToUser(
+            link.userId.toString(),
+            "notification",
+            {
+              message: `Warning: The link ${link.shortUrl} you created has violated our policies. Please review and ensure that your links fully comply with our guidelines. If violations persist, your account may be suspended. For further details, please contact support.`,
+            }
+          );
+
+          if (!isNoticed) {
+            console.error("Failed to send notification to user.");
+          }
           break;
         case "disable":
           await updateLinkStatus(report.linkId, true);

@@ -100,20 +100,21 @@ const Popover = ({
         {children}
       </div>
 
-      {isOpen && (
-        <div
-          ref={popoverRef}
-          className={`
+      <div
+        ref={popoverRef}
+        className={`
           absolute z-50 min-w-[200px] bg-white rounded-lg shadow-lg
           border border-gray-200
           animate-fade duration-200
           ${getPositionStyles()}
           ${className}
+          ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}
         `}
-        >
-          {content}
-        </div>
-      )}
+      >
+        {typeof content === "function"
+          ? content({ onClose: () => setIsOpen(false) })
+          : content}
+      </div>
     </div>
   );
 };

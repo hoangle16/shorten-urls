@@ -6,6 +6,8 @@ const { linkSortKey } = require("../consts/consts");
 const LinkStat = require("../models/LinkStat");
 const dayjs = require("dayjs");
 const Report = require("../models/Report");
+const notificationService = require("../services/notificationService");
+const socketService = require("../config/socket");
 
 const generateShortUrl = (domain) => {
   return `${domain}/${Math.random().toString(36).substring(2, 8)}`;
@@ -429,16 +431,53 @@ const updateLinkStatus = async (linkId, isDisabled, message) => {
     throw new CustomError("Link not found", 404);
   }
 
+  if (link.isDisabled === isDisabled) {
+    return {
+      link,
+      status: isDisabled ? "disabled" : "enabled",
+    };
+  }
+
   link.isDisabled = isDisabled;
   await link.save();
 
-  // TODO: send a notification to user (link.userId)
-  // notifyUser(link.userId, updatedStatus, message);
+  if (link?.userId) {
+    message = message || generateStatusMessage(link.shortUrl, isDisabled);
+    await handleUserNotification(link.userId, message);
+  }
 
   return {
     link,
     status: isDisabled ? "disabled" : "enabled",
   };
+};
+
+// Private methods
+const generateStatusMessage = (shortUrl, isDisabled) => {
+  if (isDisabled) {
+    return `The link ${shortUrl} you created is no longer active due to a violation of our policies. Please ensure that your links adhere to our rules. For further assistance, contact support.`;
+  }
+  return `The link ${shortUrl} has been reactivated and is now accessible. Please ensure that your links continue to adhere to our policies to avoid future interruptions. If you have any questions, feel free to contact support.`;
+};
+
+const handleUserNotification = async (userId, message) => {
+  // Create notification in database
+  await notificationService.createNotification({
+    userId,
+    message,
+    type: "warning",
+  });
+
+  // Send real-time notification
+  const isNotified = socketService.sendNotificationToUser(
+    userId.toString(),
+    "notification",
+    { message }
+  );
+
+  if (!isNotified) {
+    console.error(`Failed to send real-time notification to user ${userId}`);
+  }
 };
 
 module.exports = {

@@ -110,7 +110,7 @@ const UpdateReportStatusDialog = ({ isOpen, onClose, report }) => {
           error={errors.status?.message}
           required
         />
-        {watch("status") === "resolved" && (
+        {watch("status") === "resolved" && report.status !== "resolved" && (
           <Select
             {...register("action")}
             label="Action"
