@@ -48,7 +48,10 @@ const Login = () => {
         const email = err.response?.data?.extraData?.email || "";
         navigate("/verify-email", { state: { email: email, autoSend: true } });
       } else {
-        setError("Failed to login. Please check your credentials.");
+        setError(
+          err?.response?.data?.message ||
+            "Failed to login. Please check your credentials."
+        );
       }
     } finally {
       setIsSubmitting(false);

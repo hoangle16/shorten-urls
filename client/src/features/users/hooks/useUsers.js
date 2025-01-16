@@ -175,3 +175,20 @@ export const useUpdateAvatar = (addToast) => {
     },
   });
 };
+
+export const useBanUser = (addToast) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: userApi.banUser,
+    onSuccess: (_, { userId }) => {
+      queryClient.invalidateQueries(userKeys.lists());
+      queryClient.invalidateQueries(userKeys.detail(userId));
+      addToast("User banned successfully!", { variant: "success" });
+    },
+    onError: (err) => {
+      addToast("Failed to ban user. Please try again.", {
+        variant: "error",
+      });
+    },
+  });
+};

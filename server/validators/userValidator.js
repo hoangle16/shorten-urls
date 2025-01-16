@@ -61,6 +61,10 @@ const userQueryValidate = [
     .optional({ nullable: true })
     .isBoolean()
     .withMessage("isVerify must be a boolean"),
+  query("isBanned")
+    .optional({ nullable: true })
+    .isBoolean()
+    .withMessage("isBanned must be a boolean"),
   query("role")
     .optional({ nullable: true })
     .isIn(Object.values(roles))

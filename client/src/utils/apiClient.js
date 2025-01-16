@@ -28,16 +28,22 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const data = await authApi.renewTokens();
-        const token = data.token;
-        localStorage.setItem("token", token);
+      console.log("error test", error);
+      if (
+        error.response?.data?.message !==
+        "Access denied. The token is blacklisted."
+      ) {
+        originalRequest._retry = true;
+        try {
+          const data = await authApi.renewTokens();
+          const token = data.token;
+          localStorage.setItem("token", token);
 
-        originalRequest.headers["Authorization"] = token;
-        return apiClient(originalRequest);
-      } catch (err) {}
-      console.error("Failed to refresh token", err);
+          originalRequest.headers["Authorization"] = token;
+          return apiClient(originalRequest);
+        } catch (err) {}
+        console.error("Failed to refresh token", err);
+      }
 
       localStorage.removeItem("token");
       window.location.href = "/login";

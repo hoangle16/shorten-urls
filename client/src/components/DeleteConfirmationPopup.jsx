@@ -1,6 +1,5 @@
 import { Trash2 } from "lucide-react";
-import { Button } from "./Button";
-import Dialog from "./Dialog";
+import ConfirmDialog from "./ConfirmDialog";
 
 const DeleteConfirmationDialog = ({
   isOpen,
@@ -17,9 +16,16 @@ const DeleteConfirmationDialog = ({
     (isMultipleDelete
       ? `Are you sure you want to delete these ${items.length} items?`
       : "Are you sure you want to delete this item?");
+  const btnConfirmText = isMultipleDelete
+    ? `Yes, delete ${items.length}`
+    : "Yes, I'm sure";
   return (
-    <Dialog isOpen={isOpen} onClose={() => onClose()} title={title}>
-      <div className="flex flex-col items-center">
+    <ConfirmDialog
+      isOpen={isOpen}
+      onClose={() => onClose()}
+      onConfirm={onConfirm}
+      title={title}
+      ICON={
         <div className="relative mb-6">
           <Trash2 size={60} className="text-gray-800" />
           {isMultipleDelete && (
@@ -28,23 +34,11 @@ const DeleteConfirmationDialog = ({
             </div>
           )}
         </div>
-        <p className="text-gray-800 mb-6">{confirmText}</p>
-        <div className="flex justify-center gap-2">
-          <Button variant="light" onClick={onClose}>
-            No, cancel
-          </Button>
-          <Button
-            variant="danger"
-            onClick={() => {
-              onConfirm(items);
-              onClose();
-            }}
-          >
-            {isMultipleDelete ? `Yes, delete ${items.length}` : "Yes, I'm sure"}
-          </Button>
-        </div>
-      </div>
-    </Dialog>
+      }
+      confirmText={confirmText}
+      btnConfirmText={btnConfirmText}
+      items={items}
+    />
   );
 };
 

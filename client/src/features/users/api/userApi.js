@@ -7,6 +7,7 @@ export const userApi = {
   getUsers: async ({
     search,
     isVerify,
+    isBanned,
     role,
     sortBy,
     sortOrder,
@@ -16,6 +17,7 @@ export const userApi = {
     const url = generateQueryURL(BASE_URL, {
       search,
       isVerify,
+      isBanned,
       role,
       sortBy,
       sortOrder,
@@ -94,6 +96,13 @@ export const userApi = {
     const response = await apiClient.post(
       `${BASE_URL}/reset-password?token=${token}`,
       { password, confirmPassword }
+    );
+    return response.data;
+  },
+  banUser: async ({ userId, isBanned }) => {
+    console.log("ban user", isBanned, `${BASE_URL}/ban/${userId}/${isBanned}`);
+    const response = await apiClient.put(
+      `${BASE_URL}/ban/${userId}/${isBanned}`
     );
     return response.data;
   },

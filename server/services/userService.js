@@ -11,6 +11,7 @@ const cloudinaryService = require("../services/cloudinaryService");
 const getUsers = async ({
   search,
   isVerify,
+  isBanned,
   role,
   sortBy = "createdAt",
   sortOrder = "asc",
@@ -42,6 +43,10 @@ const getUsers = async ({
 
   if (isVerify !== undefined && isVerify !== null) {
     query.isVerify = isVerify;
+  }
+
+  if (isBanned !== undefined && isBanned !== null) {
+    query.isBanned = isBanned;
   }
 
   if (role) {
@@ -334,6 +339,21 @@ const changePassword = async (userId, currentPassword, newPassword) => {
   );
 };
 
+const updateUserBanStatus = async (userId, isBanned) => {
+  const updateFields =
+    isBanned === "true"
+      ? {
+          isBanned: true,
+          refreshToken: null,
+        }
+      : { isBanned: false };
+  const user = await User.findByIdAndUpdate(userId, updateFields, {
+    new: true,
+  });
+  if (!user) throw new CustomError("User not found", 404);
+  return user;
+};
+
 module.exports = {
   getUsers,
   getUser,
@@ -348,4 +368,5 @@ module.exports = {
   verifyToken,
   resetPassword,
   changePassword,
+  updateUserBanStatus,
 };

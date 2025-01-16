@@ -1,6 +1,10 @@
 const authService = require("../services/authService");
 const mailService = require("../services/mailService");
-const { generateVerificationToken, CustomError } = require("../helpers/utils");
+const {
+  generateVerificationToken,
+  CustomError,
+  setBlacklistToken,
+} = require("../helpers/utils");
 const asyncHandler = require("express-async-handler");
 
 const register = asyncHandler(async (req, res) => {
@@ -39,7 +43,9 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logout = asyncHandler(async (req, res) => {
+  const token = req.header("Authorization");
   await authService.logout(req.user.id);
+  await setBlacklistToken(token);
   res.clearCookie("refreshToken");
   res.json({ message: "Logged out successfully" });
 });

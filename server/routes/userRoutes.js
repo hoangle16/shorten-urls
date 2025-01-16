@@ -22,6 +22,13 @@ router.put(
   userController.updateAvatar
 );
 
+router.put(
+  "/users/ban/:userId/:isBanned",
+  authenticateToken,
+  authorizeRoles(roles.admin),
+  userController.updateUserBanStatus
+);
+
 router.delete("/users/avatar", authenticateToken, userController.deleteAvatar);
 
 router.get(

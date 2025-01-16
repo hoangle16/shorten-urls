@@ -41,6 +41,9 @@ const loginUser = async (username, password) => {
   if (!user.isVerify) {
     throw new CustomError("Email not verified", 403, { email: user.email });
   }
+  if (user.isBanned) {
+    throw new CustomError("User is banned", 400);
+  }
 
   const isPasswordMatch = await user.comparePassword(password);
   if (!isPasswordMatch) {

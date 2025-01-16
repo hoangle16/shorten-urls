@@ -1,6 +1,7 @@
 const redisClient = require("../config/redis");
 const crypto = require("crypto");
 const geoip = require("geoip-lite");
+const { default: mongoose } = require("mongoose");
 
 /**
  *
@@ -17,6 +18,38 @@ const cacheGetOrSet = async (key, fetchFunc) => {
   const data = await fetchFunc();
   await redisClient.set(key, JSON.stringify(data), { EX: 60 * 5 });
   return data;
+};
+
+/**
+ * @param {string} key - token or userId
+ */
+const setBlacklistToken = async (key) => {
+  const cacheKey = mongoose.isObjectIdOrHexString(key)
+    ? `blacklist:userId:${key}`
+    : `blacklist:token:${key}`;
+  await redisClient.set(cacheKey, "banned", { EX: 60 * 15 });
+};
+
+/**
+ * @param {string} key - token or userId
+ */
+const removeBlacklistToken = async (key) => {
+  const cacheKey = mongoose.isObjectIdOrHexString(key)
+    ? `blacklist:userId:${key}`
+    : `blacklist:token:${key}`;
+  await redisClient.del(cacheKey);
+};
+
+/**
+ * @param {string} key - token or userId
+ * @returns true if the key is blacklisted, otherwise false
+ */
+const isTokenBlacklisted = async (key) => {
+  const cacheKey = mongoose.isObjectIdOrHexString(key)
+    ? `blacklist:userId:${key}`
+    : `blacklist:token:${key}`;
+  const isBanned = await redisClient.get(cacheKey);
+  return isBanned === "banned";
 };
 
 /**
@@ -50,7 +83,7 @@ const updateCacheAfterDeleteMany = async (keys, deleteFunc) => {
   }
   const data = await deleteFunc();
   return data;
-}
+};
 
 /**
  *
@@ -100,6 +133,9 @@ const extractShortCode = (url) => {
 
 module.exports = {
   cacheGetOrSet,
+  setBlacklistToken,
+  removeBlacklistToken,
+  isTokenBlacklisted,
   updateCacheAfterModification,
   checkLinkExpiry,
   generateShortLink,
@@ -108,5 +144,5 @@ module.exports = {
   getCountryFromIP,
   extractShortCode,
   UpdateCacheAfterDelete,
-  updateCacheAfterDeleteMany
+  updateCacheAfterDeleteMany,
 };

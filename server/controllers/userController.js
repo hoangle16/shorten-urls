@@ -6,6 +6,8 @@ const {
   CustomError,
   UpdateCacheAfterDelete,
   updateCacheAfterDeleteMany,
+  setBlacklistToken,
+  removeBlacklistToken,
 } = require("../helpers/utils");
 const mailService = require("../services/mailService");
 const asyncHandler = require("express-async-handler");
@@ -17,6 +19,7 @@ const getUsers = asyncHandler(async (req, res) => {
   const {
     search,
     isVerify,
+    isBanned,
     role,
     sortBy,
     sortOrder,
@@ -38,6 +41,7 @@ const getUsers = asyncHandler(async (req, res) => {
   const users = await userService.getUsers({
     search,
     isVerify,
+    isBanned,
     role,
     sortBy,
     sortOrder,
@@ -94,7 +98,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const updateAvatar = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  
+
   if (!req.file) {
     throw new CustomError("No file uploaded", 400);
   }
@@ -201,6 +205,19 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json({ message: "Password reset successfully" });
 });
 
+const updateUserBanStatus = asyncHandler(async (req, res) => {
+  const { userId, isBanned } = req.params;
+  const user = await userService.updateUserBanStatus(userId, isBanned);
+  if (isBanned === "true") {
+    await setBlacklistToken(userId);
+  } else {
+    await removeBlacklistToken(userId);
+  }
+  res.json({
+    message: `User ${user.username} ${isBanned ? "unban" : "ban"} successfully`,
+  });
+});
+
 module.exports = {
   getUsers,
   getUser,
@@ -216,4 +233,5 @@ module.exports = {
   checkForgotPasswordToken,
   resetPassword,
   changePassword,
+  updateUserBanStatus,
 };

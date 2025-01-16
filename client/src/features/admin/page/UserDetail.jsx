@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, UserRoundCheck, UserRoundX } from "lucide-react";
 import dayjs from "dayjs";
 import { DetailLayout } from "../../shared/component/DetailLayout";
 import { ErrorDisplay } from "../../shared/component/ErrorDisplay";
 import { StatCard } from "../../shared/component/StatCard";
 import { InfoGrid } from "../../shared/component/InfoGrid";
-import { useDeleteUser, useUser } from "../../users/hooks/useUsers";
+import { useBanUser, useDeleteUser, useUser } from "../../users/hooks/useUsers";
 import { useToast } from "../../../state/ToastContext";
 import DeleteConfirmationDialog from "../../../components/DeleteConfirmationPopup";
 import UpdateUserDialog from "../component/UpdateUserDialog";
 import { Button } from "../../../components/Button";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 
 const UserDetail = () => {
   const { userId } = useParams();
@@ -18,8 +19,12 @@ const UserDetail = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const deleteUser = useDeleteUser(addToast);
+  const banUser = useBanUser(addToast);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
+
+  const isBanned = !!data?.user?.isBanned;
 
   if (error) {
     return (
@@ -47,8 +52,12 @@ const UserDetail = () => {
         data?.user?.role?.charAt(0).toUpperCase() + data?.user?.role?.slice(1),
     },
     {
-      label: "Status",
+      label: "Verify",
       value: data?.user?.isVerify ? "Verified" : "Unverified",
+    },
+    {
+      label: "Status",
+      value: isBanned ? "Banned" : "Allowed",
     },
     {
       label: "Join Date",
@@ -66,6 +75,15 @@ const UserDetail = () => {
       >
         <Edit className="w-4 h-4" />
         Update User
+      </Button>
+      <Button
+        variant={`${isBanned ? "success" : "warning"}`}
+        onClick={() => setIsBanDialogOpen(true)}
+        className="flex items-center gap-2"
+        size="sm"
+      >
+        <UserRoundX className="w-4 h-4" />
+        {isBanned ? "Unban" : "Ban"} User
       </Button>
       <Button
         variant="danger"
@@ -88,6 +106,11 @@ const UserDetail = () => {
         }
       },
     });
+  };
+
+  const handleBanConfirm = (ids) => {
+    banUser.mutate({ userId: ids[0], isBanned: !isBanned });
+    setIsBanDialogOpen(false);
   };
 
   return (
@@ -124,6 +147,23 @@ const UserDetail = () => {
         isOpen={isUpdateDialogOpen}
         onClose={() => setIsUpdateDialogOpen(false)}
         user={data?.user}
+      />
+      <ConfirmDialog
+        isOpen={isBanDialogOpen}
+        onClose={() => setIsBanDialogOpen(false)}
+        onConfirm={handleBanConfirm}
+        title="Confirm Ban"
+        ICON={
+          isBanned ? (
+            <UserRoundCheck size={60} className="text-gray-800 mb-6" />
+          ) : (
+            <UserRoundX size={60} className="text-gray-800 mb-6" />
+          )
+        }
+        confirmText={`Are you sure you want to ${
+          isBanned ? "unban" : "ban"
+        } this user!`}
+        items={[data?.user?._id]}
       />
     </>
   );
