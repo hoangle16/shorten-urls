@@ -44,8 +44,10 @@ const login = asyncHandler(async (req, res) => {
 
 const logout = asyncHandler(async (req, res) => {
   const token = req.header("Authorization");
-  await authService.logout(req.user.id);
-  await setBlacklistToken(token);
+  if (token && req.user) {
+    await authService.logout(req.user.id);
+    await setBlacklistToken(token);
+  }
   res.clearCookie("refreshToken");
   res.json({ message: "Logged out successfully" });
 });

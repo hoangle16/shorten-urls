@@ -8,7 +8,7 @@ const validateRequest = require("../middlewares/validateRequest");
 const router = express.Router();
 
 const authController = require("../controllers/authController");
-const { authenticateToken } = require("../middlewares/auth");
+const { optionalAuthenticateToken } = require("../middlewares/auth");
 
 router.post(
   "/auth/register",
@@ -24,7 +24,7 @@ router.post(
   authController.login
 );
 
-router.post("/auth/logout", authenticateToken, authController.logout);
+router.post("/auth/logout", optionalAuthenticateToken, authController.logout);
 
 router.post("/auth/renew-tokens", authController.renewTokens);
 

@@ -106,7 +106,7 @@ const getStatListByLinkId = async ({
       $lte: endTime,
     };
   }
-  console.log(query);
+
   const totalItems = await LinkStat.countDocuments(query);
 
   const totalPages = Math.ceil(totalItems / limit);
@@ -406,7 +406,7 @@ const fillMissingDates = (stats, startDate, endDate) => {
     acc[item._id] = item.totalClicks;
     return acc;
   }, {});
-  console.log("startMap", statsMap);
+
   return allDates.map((date) => ({
     date: date,
     clicks: statsMap[date] || 0,

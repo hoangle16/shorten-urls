@@ -37,7 +37,7 @@ const optionalAuthenticateToken = (req, res, next) => {
   if (token) {
     jwt.verify(token, jwtSecret, (err, decoded) => {
       if (err) {
-        if (err instanceof jwt.TokenExpiredError) {
+        if (err instanceof jwt.TokenExpiredError && req.cookies.refreshToken) {
           return res.status(401).send("Access denied. Token expired.");
         }
         req.user = null;

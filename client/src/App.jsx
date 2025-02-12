@@ -6,6 +6,7 @@ import Loading from "./components/Loading";
 import { ToastProvider } from "./state/ToastContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
   const queryClient = new QueryClient({
@@ -23,9 +24,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ToastProvider>
-          <Suspense fallback={<Loading fullScreen={true} />}>
-            <AppRoutes />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<Loading fullScreen={true} />}>
+              <AppRoutes />
+            </Suspense>
+          </ErrorBoundary>
         </ToastProvider>
       </AuthProvider>
       <ReactQueryDevtools />
